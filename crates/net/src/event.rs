@@ -6,6 +6,6 @@ pub enum IncomingWorldNetworkEvent {
 
 #[derive(Debug)]
 pub enum OutgoingWorldNetworkEvent {
-    Packet(Box<wow_world_messages::vanilla::opcodes::ServerOpcodeMessage>),
+    Packet(Box<wow_world_messages::vanilla::opcodes::ClientOpcodeMessage>),
     Disconnected,
 }

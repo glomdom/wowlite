@@ -39,7 +39,7 @@ pub async fn authenticate(
             major: 1,
             minor: 12,
             patch: 1,
-            build: constants::REAL_WOW_REVISION,
+            build: constants::WOW_REVISION,
         },
         platform: Platform::X86,
         os: Os::Windows,

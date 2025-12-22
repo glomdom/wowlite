@@ -8,6 +8,7 @@ use crate::{
 };
 
 pub mod auth;
+pub mod character;
 pub mod session;
 
 pub fn spawn_world_loop(
@@ -24,6 +25,8 @@ pub fn spawn_world_loop(
                 msg = ServerOpcodeMessage::tokio_read_encrypted(&mut stream, world_session.crypto.decrypter()) => {
                     match msg {
                         Ok(packet) => {
+                            trace!("Received packet {:?}", packet);
+
                             if tx_world.send(IncomingWorldNetworkEvent::Packet(Box::new(packet))).await.is_err() {
                                 error!("Game thread is dead, cannot send incoming world packet");
 
@@ -44,7 +47,9 @@ pub fn spawn_world_loop(
                 Some(event) = rx_world.recv() => {
                     match event {
                         OutgoingWorldNetworkEvent::Packet(packet) => {
-                            if let Err(e) = packet.tokio_write_encrypted_server(&mut stream, world_session.crypto.encrypter()).await {
+                            trace!("Sending packet {:?}", packet);
+
+                            if let Err(e) = packet.tokio_write_encrypted_client(&mut stream, world_session.crypto.encrypter()).await {
                                 error!("Write error in network loop: {}", e);
 
                                 break;

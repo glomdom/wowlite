@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use net::{
     event::{IncomingWorldNetworkEvent, OutgoingWorldNetworkEvent},
-    world::{auth::authenticate_world, spawn_world_loop},
+    world::{auth::authenticate_world, character::get_characters_request, spawn_world_loop},
 };
 use tokio::{io::AsyncWriteExt, net::TcpStream, sync::mpsc};
 use tracing::{debug, info, level_filters::LevelFilter, trace};
@@ -21,14 +21,14 @@ async fn main() -> color_eyre::Result<()> {
         .init();
 
     let (tx_world_in, _rx_world_in) = mpsc::channel::<IncomingWorldNetworkEvent>(4096);
-    let (_tx_world_out, rx_world_out) = mpsc::channel::<OutgoingWorldNetworkEvent>(128);
+    let (tx_world_out, rx_world_out) = mpsc::channel::<OutgoingWorldNetworkEvent>(128);
 
     debug!("Initialized mpsc channels");
     info!("Connecting to auth server");
 
     let mut auth_stream = TcpStream::connect("127.0.0.1:3724").await?;
     // let mut auth_stream = TcpStream::connect("logon.turtle-server-eu.kz:3724").await?;
-    let auth_session = net::auth::authenticate(&mut auth_stream, "test", "test123").await?;
+    let auth_session = net::auth::authenticate(&mut auth_stream, "jujufis", "ihateniggers").await?;
 
     info!("Authenticated successfully, dropping connection to auth");
 
@@ -47,6 +47,12 @@ async fn main() -> color_eyre::Result<()> {
 
     let world_session = authenticate_world(&mut world_stream, &auth_session).await?;
     spawn_world_loop(world_stream, world_session, tx_world_in, rx_world_out);
+
+    tx_world_out
+        .send(OutgoingWorldNetworkEvent::Packet(Box::new(
+            get_characters_request(),
+        )))
+        .await?;
 
     loop {
         std::thread::sleep(Duration::from_millis(100));
