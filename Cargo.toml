@@ -1,0 +1,30 @@
+[workspace]
+members = [
+    "crates/assets",
+    "crates/client",
+    "crates/common",
+    "crates/net",
+    "crates/renderer",
+]
+resolver = "3"
+
+# [package]
+# name = "wowlite"
+# version = "0.1.0"
+# edition = "2024"
+
+# [dependencies]
+# bytemuck = "1.24.0"
+# color-eyre = "0.6.5"
+# glam = "0.30.9"
+# hecs = "0.10.5"
+# tokio = { version = "1.48.0", features = ["macros", "rt", "rt-multi-thread"] }
+# tracing = "0.1.44"
+# tracing-subscriber = { version = "0.3.22", features = ["env-filter"] }
+# wgpu = "27.0.1"
+# winit = "0.30.12"
+# wow-mpq = "0.3.2"
+# wow_dbc = "0.3.0"
+# wow_login_messages = { version = "0.5.0", features = ["sync"] }
+# wow_srp = { version = "0.7.0" }
+# wow_world_messages = { version = "0.3.0", features = ["sync", "vanilla"] }
